@@ -2,14 +2,11 @@ package com.qsoft.DBUnit;
 
 import com.qsoft.DBUnit.pesistent.dao.BankAccountDAO;
 import com.qsoft.DBUnit.pesistent.model.BankAccountDTO;
-import org.dbunit.DataSourceDatabaseTester;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +41,7 @@ public class TestDBUnit
     private Connection dbConnection;
 
     public static final String accountNumber = "123456789";
+    public static final String newAccountNumber = "1234567890";
     private static final String resourcePath = new File("").getAbsolutePath() + "/src/test/resources";
 
     public static final String JDBC_DRIVER = org.postgresql.Driver.class.getName();
@@ -89,6 +85,17 @@ public class TestDBUnit
         bankAccountEntity.setId(1);
         BankAccountDTO getBankAccount = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class, accountNumber);
         assertEquals(bankAccountEntity,getBankAccount);
-
+    }
+    @Test
+    public void testCreateAccount(){
+        BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
+        bankAccountDAO.create(bankAccountEntity);
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,bankAccountEntity.getAccount_number());
+        assertEquals(bankAccountEntity,bankAccountGetFromDB);
+    }
+    @Test
+    public void testDeposit(){
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,accountNumber);
+        BankAccount.deposit(accountNumber,10,"deposit");
     }
 }

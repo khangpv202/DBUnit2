@@ -109,10 +109,6 @@ public class BankAccountDTO
         {
             return false;
         }
-        if (id != that.id)
-        {
-            return false;
-        }
         if (timestamps != that.timestamps)
         {
             return false;
