@@ -3,7 +3,6 @@ package com.qsoft.DBUnit.pesistent.dao.impl;
 import com.qsoft.DBUnit.pesistent.dao.BankAccountDAO;
 import com.qsoft.DBUnit.pesistent.model.BankAccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +23,14 @@ public class BankAccountDAOImpl implements BankAccountDAO
     private EntityManager entityManager;
 
     @Override
-    public Object findById(Class clazz, String accountNumber)
+    public Object findByAccountNumber(Class clazz, String accountNumber)
     {
         //System.out.println(entityManager);
         Query query = entityManager.createQuery("select d from BankAccountDTO d where d.account_number= :accountNumber");
         query.setParameter("accountNumber",accountNumber);
-       // System.out.println("list  " +query.getResultList());
-        return query.getResultList().get(0);  //To change body of implemented methods use File | Settings | File Templates.
+       if(query.getResultList().size()==0)
+           return null;
+       return query.getResultList().get(0);  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

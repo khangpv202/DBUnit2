@@ -1,5 +1,6 @@
 package com.qsoft.DBUnit;
 
+import com.qsoft.DBUnit.business.BankAccount.BankAccount;
 import com.qsoft.DBUnit.pesistent.dao.BankAccountDAO;
 import com.qsoft.DBUnit.pesistent.model.BankAccountDTO;
 import org.dbunit.IDatabaseTester;
@@ -21,6 +22,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -83,19 +85,22 @@ public class TestDBUnit
     {
         BankAccountDTO bankAccountEntity = new BankAccountDTO(accountNumber,100l,"default");
         bankAccountEntity.setId(1);
-        BankAccountDTO getBankAccount = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class, accountNumber);
+        BankAccountDTO getBankAccount = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
         assertEquals(bankAccountEntity,getBankAccount);
     }
     @Test
     public void testCreateAccount(){
         BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
         bankAccountDAO.create(bankAccountEntity);
-        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,bankAccountEntity.getAccount_number());
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, bankAccountEntity.getAccount_number());
         assertEquals(bankAccountEntity,bankAccountGetFromDB);
     }
     @Test
-    public void testDeposit(){
-        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,accountNumber);
-        BankAccount.deposit(accountNumber,10,"deposit");
+    public void testDeposit() throws SQLException
+    {
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
+        System.out.println(bankAccountGetFromDB);
+        System.out.println(BankAccount.getAccountNumber(accountNumber));
+        //BankAccount.deposit(accountNumber, 10, "deposit");
     }
 }

@@ -17,7 +17,7 @@ public class MainAppTest
     {
         ApplicationContext appContex = new ClassPathXmlApplicationContext("SpringConfigTest.xml");
         BankAccountDAO bankAccountDAO = (BankAccountDAO)appContex.getBean("bankAccountDAOImpl");
-        BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,"123456789");
+        BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class,"123456789");
         //.out.println(bankAccountDAO.findById(BankAccountDTO.class,0l));
         //BankAccountDTO bankAccountDTO = new BankAccountDTO("12345678",6000l,"new hehe");
         /*BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findById(BankAccountDTO.class,1l);

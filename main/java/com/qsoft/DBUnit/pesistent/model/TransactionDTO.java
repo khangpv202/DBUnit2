@@ -20,6 +20,9 @@ public class TransactionDTO
         this.description = descreption;
     }
 
+    public String toString(){
+        return "accountNumber: "+accountNumber+"amount: "+ amount+"description: "+description+"timestemp: "+timestemp;
+    }
     public long getTimestamp()
     {
         return timestemp;

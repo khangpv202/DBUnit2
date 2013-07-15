@@ -7,8 +7,11 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="com.qsoft.DBUnit.pesistent.dao"/>
-
+    <context:component-scan base-package="com.qsoft.DBUnit"/>
+    <bean id="findByAccountNumber" class="com.qsoft.DBUnit.business.BankAccount.BankAccount"
+          factory-method="getAccountNumber">
+        <constructor-arg value="bankAccountDAO"/>
+    </bean>
     <bean id="entityManager"
           class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
         <property name="entityManagerFactory" ref="entityManagerFactory" />

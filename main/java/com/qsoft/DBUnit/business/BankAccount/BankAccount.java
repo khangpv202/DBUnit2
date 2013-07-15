@@ -1,9 +1,12 @@
 package com.qsoft.DBUnit.business.BankAccount;
 
+import com.qsoft.DBUnit.business.Transaction.Transaction;
 import com.qsoft.DBUnit.pesistent.dao.BankAccountDAO;
 import com.qsoft.DBUnit.pesistent.model.BankAccountDTO;
 import com.qsoft.DBUnit.pesistent.model.TransactionDTO;
-import org.h2.mvstore.TransactionStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,29 +16,37 @@ import java.util.List;
  * Date: 7/12/13
  * Time: 1:50 PM
  */
-
+@Component
+@Transactional
 public class BankAccount
 {
-    private BankAccountDAO bankAccountDAO ;
+    @Autowired
+    private static BankAccountDAO bankAccountDAO ;
+
+    private final static String accountNumber = "123456789";
 
 
     public static BankAccountDTO open(String accountNumber) throws SQLException
     {
         BankAccountDTO account = new BankAccountDTO(accountNumber);
-        bankAccountDAO.save(account);
+        bankAccountDAO.create(account);
         return account;
     }
 
     public static BankAccountDTO getAccountNumber(String accountNumber) throws SQLException
     {
-        return bankAccountDAO.getAccountNumber(accountNumber);
+        return (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class,accountNumber);
     }
 
     public static TransactionDTO deposit(String accountNumber, int amount, String descreption) throws SQLException
     {
-        BankAccountDTO bankAccountDTO = bankAccountDAO.getAccountNumber(accountNumber);
+        //BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
+        System.out.println(accountNumber);
+        System.out.println(bankAccountDAO);
+        BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
+        System.out.println(bankAccountDTO);
         bankAccountDTO.setBalance (bankAccountDTO.getBalance()+amount);
-        bankAccountDAO.save(bankAccountDTO);
+        bankAccountDAO.update(bankAccountDTO);
         TransactionDTO transaction = new TransactionDTO(accountNumber,amount,descreption);
         Transaction.save(transaction);
         return transaction;
@@ -43,9 +54,9 @@ public class BankAccount
 
     public static TransactionDTO withdraw(String accountNumber, int amount, String description) throws SQLException
     {
-        BankAccountDTO bankAccountDTO = bankAccountDAO.getAccountNumber(accountNumber);
+        BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
         bankAccountDTO.setBalance (bankAccountDTO.getBalance()+amount);
-        bankAccountDAO.save(bankAccountDTO);
+        bankAccountDAO.update(bankAccountDTO);
         TransactionDTO transactionDTO = new TransactionDTO(accountNumber,amount,description);
         Transaction.save(transactionDTO);
         return  transactionDTO;
@@ -53,12 +64,12 @@ public class BankAccount
 
     public static List<TransactionDTO> getTransactionsOccurred(String accountNumber)
     {
-        return TransactionStore.Transaction.getTransactionsOccurred(accountNumber);
+        return Transaction.getTransactionsOccurred(accountNumber);
     }
 
     public static List<TransactionDTO>  getTransactionsOccurred(String accountNumber, long startTime, long stopTime)
     {
-        return TransactionStore.Transaction.getTransactionsOccurred(accountNumber, startTime, stopTime);
+        return Transaction.getTransactionsOccurred(accountNumber, startTime, stopTime);
     }
 
     public static List<TransactionDTO> getTransactionsOccurred(String accountNumber, int numberNewestOfTransaction)

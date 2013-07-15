@@ -8,7 +8,7 @@ package com.qsoft.DBUnit.pesistent.dao;
 
 public interface BankAccountDAO
 {
-    Object findById(Class clazz, String accountNumber);
+    Object findByAccountNumber(Class clazz, String accountNumber);
     Object findByObject(Object obj);
     void delete(Object obj);
     void update(Object obj);

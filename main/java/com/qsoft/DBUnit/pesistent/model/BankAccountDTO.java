@@ -29,6 +29,12 @@ public class BankAccountDTO
     {
     }
 
+    public BankAccountDTO(String accountNumber)
+    {
+        this.account_number= accountNumber;
+
+    }
+
     public int getId()
     {
         return id;
