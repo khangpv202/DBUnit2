@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -40,6 +41,10 @@ public class TestDBUnit
 {
     @Autowired
     private BankAccountDAO bankAccountDAO;
+
+    @Autowired
+    private BankAccount bankAccount;
+
     private Connection dbConnection;
 
     public static final String accountNumber = "123456789";
@@ -93,14 +98,28 @@ public class TestDBUnit
         BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
         bankAccountDAO.create(bankAccountEntity);
         BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, bankAccountEntity.getAccount_number());
+        System.out.println(bankAccountEntity);
+        System.out.println(bankAccountGetFromDB);
         assertEquals(bankAccountEntity,bankAccountGetFromDB);
     }
     @Test
-    public void testDeposit() throws SQLException
+    public void testUpdateAfterDepositOrWithdraw() throws SQLException
     {
-        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
-        System.out.println(bankAccountGetFromDB);
-        System.out.println(BankAccount.getAccountNumber(accountNumber));
-        //BankAccount.deposit(accountNumber, 10, "deposit");
+        BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
+        bankAccountDAO.create(bankAccountEntity);
+        bankAccountEntity.setBalance(110l);
+        bankAccountEntity.setDescription("not default");
+        bankAccountDAO.update(bankAccountEntity);
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class,bankAccountEntity.getAccount_number());
+        assertEquals(bankAccountEntity,bankAccountGetFromDB);
     }
+    @Test
+    public void testDeleteAccount(){
+        BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
+        bankAccountDAO.create(bankAccountEntity);
+        bankAccountDAO.delete(bankAccountEntity);
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByObject(bankAccountEntity);
+        assertTrue(bankAccountGetFromDB==null);
+    }
+
 }

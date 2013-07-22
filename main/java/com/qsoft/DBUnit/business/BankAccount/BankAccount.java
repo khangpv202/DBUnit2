@@ -21,24 +21,31 @@ import java.util.List;
 public class BankAccount
 {
     @Autowired
-    private static BankAccountDAO bankAccountDAO ;
+    private  BankAccountDAO bankAccountDAO ;
+
 
     private final static String accountNumber = "123456789";
 
-
-    public static BankAccountDTO open(String accountNumber) throws SQLException
+    public BankAccount(BankAccountDAO bankAccountDao){
+        bankAccountDAO = bankAccountDao;
+    }
+    public  BankAccountDTO open(String accountNumber) throws SQLException
     {
         BankAccountDTO account = new BankAccountDTO(accountNumber);
         bankAccountDAO.create(account);
         return account;
     }
 
-    public static BankAccountDTO getAccountNumber(String accountNumber) throws SQLException
+    public BankAccount()
+    {
+    }
+
+    public  BankAccountDTO getAccountNumber(String accountNumber) throws SQLException
     {
         return (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class,accountNumber);
     }
 
-    public static TransactionDTO deposit(String accountNumber, int amount, String descreption) throws SQLException
+    public  TransactionDTO deposit(String accountNumber, int amount, String descreption) throws SQLException
     {
         //BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
         System.out.println(accountNumber);
@@ -52,7 +59,7 @@ public class BankAccount
         return transaction;
     }
 
-    public static TransactionDTO withdraw(String accountNumber, int amount, String description) throws SQLException
+    public  TransactionDTO withdraw(String accountNumber, int amount, String description) throws SQLException
     {
         BankAccountDTO bankAccountDTO = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
         bankAccountDTO.setBalance (bankAccountDTO.getBalance()+amount);
@@ -62,17 +69,17 @@ public class BankAccount
         return  transactionDTO;
     }
 
-    public static List<TransactionDTO> getTransactionsOccurred(String accountNumber)
+    public  List<TransactionDTO> getTransactionsOccurred(String accountNumber)
     {
         return Transaction.getTransactionsOccurred(accountNumber);
     }
 
-    public static List<TransactionDTO>  getTransactionsOccurred(String accountNumber, long startTime, long stopTime)
+    public  List<TransactionDTO>  getTransactionsOccurred(String accountNumber, long startTime, long stopTime)
     {
         return Transaction.getTransactionsOccurred(accountNumber, startTime, stopTime);
     }
 
-    public static List<TransactionDTO> getTransactionsOccurred(String accountNumber, int numberNewestOfTransaction)
+    public  List<TransactionDTO> getTransactionsOccurred(String accountNumber, int numberNewestOfTransaction)
     {
         return Transaction.getTransactionsOccurred(accountNumber,numberNewestOfTransaction);
     }

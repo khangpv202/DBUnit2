@@ -90,7 +90,7 @@ public class BankAccountDTO
         this.account_number = account_number;
         this.balance = balance;
         this.description = description;
-        this.timestamps = 0;
+        this.timestamps = System.currentTimeMillis();
     }
     public String toString(){
         return "id: "+id+" accountNumber: "+account_number+" balance: "+balance+

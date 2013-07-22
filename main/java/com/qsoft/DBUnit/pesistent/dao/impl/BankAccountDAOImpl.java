@@ -36,7 +36,8 @@ public class BankAccountDAOImpl implements BankAccountDAO
     @Override
     public Object findByObject(Object obj)
     {
-        return entityManager.find(BankAccountDTO.class,(BankAccountDTO)obj);
+        BankAccountDTO bankAccountDTO = (BankAccountDTO) obj;
+        return entityManager.find(BankAccountDTO.class,bankAccountDTO.getId());
     }
 
     @Override
