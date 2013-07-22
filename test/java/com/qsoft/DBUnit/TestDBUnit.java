@@ -94,6 +94,13 @@ public class TestDBUnit
         assertEquals(bankAccountEntity,getBankAccount);
     }
     @Test
+    public void testFindAccountWithInvalidAccountNumber(){
+        BankAccountDTO bankAccountEntity = new BankAccountDTO(accountNumber,100l,"default");
+        bankAccountDAO.create(bankAccountEntity);
+        BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber+"abc");
+        assertTrue(bankAccountGetFromDB==null);
+    }
+    @Test
     public void testCreateAccount(){
         BankAccountDTO bankAccountEntity = new BankAccountDTO(newAccountNumber,100l,"default");
         bankAccountDAO.create(bankAccountEntity);
@@ -120,6 +127,10 @@ public class TestDBUnit
         bankAccountDAO.delete(bankAccountEntity);
         BankAccountDTO bankAccountGetFromDB = (BankAccountDTO) bankAccountDAO.findByObject(bankAccountEntity);
         assertTrue(bankAccountGetFromDB==null);
+    }
+    @Test
+    public void testCreateTransaction(){
+
     }
 
 }
