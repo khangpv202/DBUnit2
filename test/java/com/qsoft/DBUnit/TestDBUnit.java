@@ -2,7 +2,9 @@ package com.qsoft.DBUnit;
 
 import com.qsoft.DBUnit.business.BankAccount.BankAccount;
 import com.qsoft.DBUnit.pesistent.dao.BankAccountDAO;
+import com.qsoft.DBUnit.pesistent.dao.TransactionDAO;
 import com.qsoft.DBUnit.pesistent.model.BankAccountDTO;
+import com.qsoft.DBUnit.pesistent.model.TransactionDTO;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.dataset.IDataSet;
@@ -41,6 +43,8 @@ public class TestDBUnit
 {
     @Autowired
     private BankAccountDAO bankAccountDAO;
+    @Autowired
+    private TransactionDAO transactionDAO;
 
     @Autowired
     private BankAccount bankAccount;
@@ -89,9 +93,13 @@ public class TestDBUnit
     public void testFindAccountByAccountNumber()
     {
         BankAccountDTO bankAccountEntity = new BankAccountDTO(accountNumber,100l,"default");
-        bankAccountEntity.setId(1);
+        bankAccountDAO.create(bankAccountEntity);
+        System.out.println(bankAccountEntity);
         BankAccountDTO getBankAccount = (BankAccountDTO) bankAccountDAO.findByAccountNumber(BankAccountDTO.class, accountNumber);
-        assertEquals(bankAccountEntity,getBankAccount);
+        System.out.println(getBankAccount);
+        assertEquals(bankAccountEntity.getAccount_number(),getBankAccount.getAccount_number());
+        assertEquals(bankAccountEntity.getBalance(),getBankAccount.getBalance());
+        assertEquals(bankAccountEntity.getTimestamps(),getBankAccount.getTimestamps());
     }
     @Test
     public void testFindAccountWithInvalidAccountNumber(){
@@ -130,6 +138,25 @@ public class TestDBUnit
     }
     @Test
     public void testCreateTransaction(){
+        TransactionDTO initialTransaction = new TransactionDTO(accountNumber,100,"default");
+        transactionDAO.create(initialTransaction);
+        TransactionDTO transactionGetFromDB = (TransactionDTO) transactionDAO.findByObject(initialTransaction);
+        assertEquals(initialTransaction,transactionGetFromDB);
+    }
+    @Test
+    public void testTransactionDeleteandUpdate(){
+        TransactionDTO initialTransaction = new TransactionDTO(accountNumber,100,"default");
+        transactionDAO.create(initialTransaction);
+        initialTransaction.setAmount(200);
+        transactionDAO.update(initialTransaction);
+        TransactionDTO transactionGetFromDB = (TransactionDTO) transactionDAO.findByObject(initialTransaction);
+        assertEquals(initialTransaction,transactionGetFromDB);
+        transactionDAO.delete(initialTransaction);
+        transactionGetFromDB= (TransactionDTO) transactionDAO.findByObject(initialTransaction);
+        assertTrue(transactionGetFromDB==null);
+    }
+    @Test
+    public void testGetTransactionsOccurred(){
 
     }
 

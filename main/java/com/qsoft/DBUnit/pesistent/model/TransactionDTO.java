@@ -33,12 +33,46 @@ public class TransactionDTO
         this.timestemp = System.currentTimeMillis();
     }
 
+    public TransactionDTO()
+    {
+    }
+
     public String toString(){
         return "accountNumber: "+accountNumber+"amount: "+ amount+"description: "+description+"timestemp: "+timestemp;
     }
     public long getTimestamp()
     {
         return timestemp;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public double getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount(double amount)
+    {
+        this.amount = amount;
+    }
+
+    public long getTimestemp()
+    {
+        return timestemp;
+    }
+
+    public void setTimestemp(long timestemp)
+    {
+        this.timestemp = timestemp;
     }
 
     public String getAccountNumber()

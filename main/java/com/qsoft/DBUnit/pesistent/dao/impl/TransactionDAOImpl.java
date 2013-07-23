@@ -2,9 +2,13 @@ package com.qsoft.DBUnit.pesistent.dao.impl;
 
 import com.qsoft.DBUnit.pesistent.dao.TransactionDAO;
 import com.qsoft.DBUnit.pesistent.model.TransactionDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,51 +20,92 @@ import java.util.List;
 @Transactional
 public class TransactionDAOImpl implements TransactionDAO
 {
+    @Autowired
+    EntityManager entityManager;
+
     @Override
     public Object findByAccountNumber(Class clazz, String accountNumber)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Query query = entityManager.createQuery("select d from TransactionDTO d where d.accountNumber= :accountNumber");
+        query.setParameter("accountNumber", accountNumber);
+        if (query.getResultList().size() == 0)
+        {
+            return null;
+        }
+        return query.getResultList().get(0);
     }
 
     @Override
     public Object findByObject(Object obj)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        TransactionDTO transactionDTO = (TransactionDTO) obj;
+        return entityManager.find(TransactionDTO.class, transactionDTO.getId());
     }
 
     @Override
     public void delete(Object obj)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        entityManager.remove(obj);
     }
 
     @Override
     public void update(Object obj)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        entityManager.merge(obj);
     }
 
     @Override
     public void create(Object obj)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        entityManager.persist(obj);
     }
 
     @Override
     public List<TransactionDTO> getTransactionsOccurred(String accountNumber)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Query query = entityManager.createQuery("select p from TransactionDTO p where p.accountNumber=:accountNumber");
+        query.setParameter("accountNumber", accountNumber);
+        return query.getResultList();
     }
 
     @Override
     public List<TransactionDTO> getTransactionsOccurred(String accountNumber, long startTime, long stopTime)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Query query = entityManager.createQuery("select p from TransactionDTO p where p.accountNumber=:accountNumber");
+        query.setParameter("accountNumber", accountNumber);
+        List<TransactionDTO> result = new ArrayList<TransactionDTO>();
+        for (Object i : query.getResultList())
+        {
+            if (((TransactionDTO) i).getTimestamp() > startTime && ((TransactionDTO) i).getTimestamp() < stopTime)
+            {
+                result.add((TransactionDTO) i);
+            }
+        }
+        return result;
     }
 
     @Override
     public List<TransactionDTO> getTransactionsOccurred(String accountNumber, int numberNewestOfTransaction)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Query query = entityManager.createQuery("select p from TransactionDTO p where p.accountNumber=:accountNumber");
+        query.setParameter("accountNumber", accountNumber);
+        List<TransactionDTO> result = new ArrayList<TransactionDTO>();
+        int count = 0;
+        int lengthOfListTransaction = query.getResultList().size();
+        if (numberNewestOfTransaction < lengthOfListTransaction)
+        {
+            for (int i = 0; i < numberNewestOfTransaction; i++)
+            {
+                result.add((TransactionDTO) query.getResultList().get(lengthOfListTransaction - i - 1));
+            }
+        }
+        else
+        {
+            for (int i = 0; i < lengthOfListTransaction; i++)
+            {
+                result.add((TransactionDTO) query.getResultList().get(lengthOfListTransaction - 1 - i));
+            }
+        }
+        return result;
     }
 }
