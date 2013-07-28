@@ -76,7 +76,7 @@ public class TransactionDAOImpl implements TransactionDAO
         List<TransactionDTO> result = new ArrayList<TransactionDTO>();
         for (Object i : query.getResultList())
         {
-            if (((TransactionDTO) i).getTimestamp() > startTime && ((TransactionDTO) i).getTimestamp() < stopTime)
+            if (((TransactionDTO) i).getTimestamp() >= startTime && ((TransactionDTO) i).getTimestamp() < stopTime)
             {
                 result.add((TransactionDTO) i);
             }

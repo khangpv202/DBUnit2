@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -157,7 +158,12 @@ public class TestDBUnit
     }
     @Test
     public void testGetTransactionsOccurred(){
-
+        List<TransactionDTO> list = transactionDAO.getTransactionsOccurred("123456789236");
+        assertEquals(list.size(),3);
     }
-
+    @Test
+    public void testGetTransactionOccurredHappenInServertIime(){
+        List<TransactionDTO> list = transactionDAO.getTransactionsOccurred("123456789236",10000,14000);
+        assertEquals(list.size(),2);
+    }
 }
